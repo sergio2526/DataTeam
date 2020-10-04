@@ -9,17 +9,18 @@ from collections import Counter
 # user_description = //div[@class="card-text my-3 mt-sm-0 px-0 px-sm-4"]/text()
 # review = response.xpath('//div//i[contains(@class, "fa fa-star active")]/@class').extract_first().replace('fa fa-star ','')
 
-class SpiderBBVA(scrapy.Spider):
+# Next page = response.xpath('//ul[@class="pagination pagination-sm justify-content-end"]//li[@class="page-item"]/a/@href')
+class BbvaSpider(scrapy.Spider):
     name = 'HelpMyCash'
     start_urls =[
-        'https://www.helpmycash.com/opiniones/banco/bbva/'
+            'https://www.helpmycash.com/opiniones/banco/bbva/?page=1/'
     ]
 
     custom_settings = {
         'FEED_URI':'HelpMyCash.json',
         'FEED_FORMAT':'json',
-        'CONCURRENT_REQUESTS':24,
-        'USER_AGENT':'DataTeam',
+        'CONCURRENT_REQUESTS':35,
+        'USER_AGENT':'sergio',
         'FEED_EXPORT_ENCODING':'utf-8'
     }
 
@@ -34,6 +35,7 @@ class SpiderBBVA(scrapy.Spider):
                 user_description = response.xpath('//div[@class="card card-review-list mb-4 "]//div[@class="card-text my-3 mt-sm-0 px-0 px-sm-4"]/text()').getall()
                 review = response.xpath('//div[@class="card card-review-list mb-4 "]//i[contains(@class, "fa fa-star ")]/@class').getall()
 
+                
                 # Convertimos los elementos en 1 si tiene una estrella, 0 si no tiene estrella
                 for x in range(0,len(review)):
                     if review[x] == 'fa fa-star active':
@@ -63,17 +65,19 @@ class SpiderBBVA(scrapy.Spider):
                     'title' : title,
                     'qualification': qualification,
                     'description': description,
-                    'title_opinion': title_opinion,
-                    'user_description': user_description,
-                    'review': lista_review
+                    'user_description':user_description,
+                    'title_opinion':title_opinion,
+                    'review':lista_review
                 }
+                
+                # Next Page
+                next_page_button_link = response.xpath('//ul[@class="pagination pagination-sm justify-content-end"]//li[@class="page-item"]/a/@href').get()
+
+                if next_page_button_link:
+                    yield response.follow(next_page_button_link, callback=self.parse)
 
             else:
                 raise ValueError(f'Error {response.status_code}')
 
         except ValueError as e:
             print(e)        
-
-
-if __name__ == '__main__':
-    SpiderBBVA.parse()
