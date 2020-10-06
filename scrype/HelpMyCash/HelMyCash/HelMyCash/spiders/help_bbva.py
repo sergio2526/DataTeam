@@ -1,4 +1,3 @@
-
 import scrapy
 from collections import Counter
 # title = //h1[@class="mt-xs-5 mt-md-0"]/text()
@@ -13,23 +12,20 @@ from collections import Counter
 class BbvaSpider(scrapy.Spider):
     name = 'HelpMyCash'
     start_urls =[
-            'https://www.helpmycash.com/opiniones/banco/bbva/?page=1/'
+            'https://www.helpmycash.com/opiniones/banco/bbva/?page=20'
     ]
 
     custom_settings = {
         'FEED_URI':'HelpMyCash.json',
         'FEED_FORMAT':'json',
         'CONCURRENT_REQUESTS':35,
-        'USER_AGENT':'sergio',
+            'USER_AGENT': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0',
         'FEED_EXPORT_ENCODING':'utf-8'
     }
 
     def parse(self, response):
         try:
             if response.status == 200:
-                title = response.xpath('//h1[@class="mt-xs-5 mt-md-0"]/text()').get()
-                qualification = response.xpath('//span[@class="font-weight-bold"]/text() | //p[@class="lead mt-2"]/text()').getall()
-                description = response.xpath('//div[@class="card card-sheet-point card-border-top-secondary"]//p[not (@class)]/text() | //div[@class="card-body"]//li/text()').getall()
 
                 title_opinion = response.xpath('//div[@class="card card-review-list mb-4 "]//a/text()').getall()
                 user_description = response.xpath('//div[@class="card card-review-list mb-4 "]//div[@class="card-text my-3 mt-sm-0 px-0 px-sm-4"]/text()').getall()
@@ -62,22 +58,14 @@ class BbvaSpider(scrapy.Spider):
                         lista_review.append(review)
                 
                 yield {
-                    'title' : title,
-                    'qualification': qualification,
-                    'description': description,
-                    'user_description':user_description,
                     'title_opinion':title_opinion,
+                    'user_description':user_description,
                     'review':lista_review
                 }
                 
-                # Next Page
-                next_page_button_link = response.xpath('//ul[@class="pagination pagination-sm justify-content-end"]//li[@class="page-item"]/a/@href').get()
-
-                if next_page_button_link:
-                    yield response.follow(next_page_button_link, callback=self.parse)
 
             else:
                 raise ValueError(f'Error {response.status_code}')
 
         except ValueError as e:
-            print(e)        
+            print(e)       
