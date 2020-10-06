@@ -12,7 +12,7 @@ from collections import Counter
 class BbvaSpider(scrapy.Spider):
     name = 'HelpMyCash'
     start_urls =[
-            'https://www.helpmycash.com/opiniones/banco/bbva/?page=4'
+            'https://www.helpmycash.com/opiniones/banco/bbva/?page=1'
     ]
 
     custom_settings = {
