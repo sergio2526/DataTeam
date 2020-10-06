@@ -12,11 +12,11 @@ from collections import Counter
 class BbvaSpider(scrapy.Spider):
     name = 'HelpMyCash'
     start_urls =[
-            'https://www.helpmycash.com/opiniones/banco/bbva/?page=20'
+            'https://www.helpmycash.com/opiniones/banco/bbva/?page=4'
     ]
 
     custom_settings = {
-        'FEED_URI':'HelpMyCash.json',
+        'FEED_URI':'HelpMyCash2.json',
         'FEED_FORMAT':'json',
         'CONCURRENT_REQUESTS':35,
             'USER_AGENT': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0',
