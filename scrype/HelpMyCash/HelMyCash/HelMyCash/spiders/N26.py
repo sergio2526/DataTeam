@@ -10,13 +10,13 @@ from collections import Counter
 
 # Next page = response.xpath('//ul[@class="pagination pagination-sm justify-content-end"]//li[@class="page-item"]/a/@href')
 class BbvaSpider(scrapy.Spider):
-    name = 'HelpMyCash_bbva'
+    name = 'HelpMyCash_N26'
     start_urls =[
-            'https://www.helpmycash.com/opiniones/banco/bbva/?page=1'
+            'https://www.helpmycash.com/opiniones/banco/n26/?page=12'
     ]
 
     custom_settings = {
-        'FEED_URI':'HelpMyCash_bbva.json',
+        'FEED_URI':'HelpMyCash_N26.json',
         'FEED_FORMAT':'json',
         'CONCURRENT_REQUESTS':35,
             'USER_AGENT': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0',
